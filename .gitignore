@@ -1,0 +1,5 @@
+*.pyc
+#src/test/samples/gapless/ogg/
+src/test/samples/gapless/flac/
+src/test/samples/gapless/mp3/
+src/test/samples/gapless/wav/
