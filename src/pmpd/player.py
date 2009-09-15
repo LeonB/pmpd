@@ -16,8 +16,24 @@ class Player(object):
     def state(self):
         return self.backend.get_state()
 
+    def schedule_next_track(self):
+        print 'scheduling new track'
+        self.remove_current_track()
+
+        print self.playlist.empty()
+        if self.playlist.empty():
+            self.stop()
+            return False
+
+        #self.schedule_next_track()
+        return self.next_track_as_current()
+
     def next_track_as_current(self):
         self.current_track = self.playlist.get()
+        print 'New track: ' + self.current_track.name
+
+    def remove_current_track(self):
+        self.current_track = None
 
     def play(self):
     #if still playing, return nothing
@@ -31,8 +47,24 @@ class Player(object):
         self.backend.play(self.current_track.name) #Current track is set
         callbacks.RunCallbackChain(Player, 'play', self)
 
+    def pause(self):
+        if self.playing():
+            self.backend.pause()
+        elif self.paused():
+            self.backend.play()
+
+    def stop(self):
+        self.backend.stop()
+
+    def next(self):
+        self.schedule_next_track()
+        self.play()
+
     def playing(self):
         return self.state() == 'playing'
+
+    def paused(self):
+        return self.state() == 'paused'
 
     def register_callback(self, name, callback, permanent=False, priority=0):
         return callbacks.RegisterCallback(Player, name, callback, permanent, priority)

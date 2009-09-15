@@ -2,8 +2,8 @@ import gst
 import gobject
 
 class Gstreamer():
+
     def __init__(self, player):
-        self.__state = 'stopped'
         self.player = player
         self.setup()
 
@@ -20,42 +20,36 @@ class Gstreamer():
     def on_message(self, bus, message):
         t = message.type
 	if t == gst.MESSAGE_EOS:
-            #self.playbin.set_state(gst.STATE_NULL)
             print 'ending....'
-            self.state = 'stopped'
-            self.loop.quit()
+            self.playbin.set_state(gst.STATE_NULL)
         elif t == gst.MESSAGE_ERROR:
             print message
             print 'error!'
-            self.loop.quit()
+            #self.loop.quit()
         elif t == gst.MESSAGE_STATE_CHANGED:
             #http://pygstdocs.berlios.de/pygst-reference/class-gstmessage.html
             new_state =  message.parse_state_changed()[1]
-
-            if new_state == gst.STATE_PAUSED:
-                self.__state = 'paused'
-            elif new_state == gst.STATE_PLAYING:
-                self.__state = 'playing'
-            else:
-                self.__state = 'stopped'
         else:
             ''
             #print message
 
     def on_about_to_finish(self, playbin):
-        try:
-            next_track = self.player.playlist.get()
-        except Exception:
-            return False
-        
-        self.playbin.set_property('uri', 'file://' + next_track.name)
+#        try:
+#            next_track = self.player.playlist.get()
+#        except Exception:
+#            return False
+#
+#        self.playbin.set_property('uri', 'file://' + next_track.name)
+#        self.player.current_track = next_track
+        self.player.schedule_next_track()
+
+        if (self.player.current_track):
+            self.playbin.set_property('uri', 'file://' + self.player.current_track.name)
 
     def play(self, uri):
         self.__state = 'playing'
         self.playbin.set_property("uri", 'file://' + uri)
         self.playbin.set_state(gst.STATE_PLAYING)
-
-        print self.playbin.get_property('uri')
 
         gobject.threads_init()
         self.loop = gobject.MainLoop()
@@ -69,5 +63,9 @@ class Gstreamer():
 #        while 1:
 #            context.iteration(True)
 
-    def state(self):
-        return self.__state
+    def pause(self):
+        self.playbin.set_state(gst.STATE_PAUSED)
+
+    def stop(self):
+        self.loop.quit()
+        self.playbin.send_event(gst.event_new_eos())
