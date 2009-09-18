@@ -20,15 +20,15 @@ class Player(object):
         print 'scheduling new track'
         self.remove_current_track()
 
-        print self.playlist.empty()
         if self.playlist.empty():
+            print 'nope, no new track'
             self.stop()
             return False
 
-        #self.schedule_next_track()
         return self.next_track_as_current()
 
     def next_track_as_current(self):
+        print 'setting next track as current'
         self.current_track = self.playlist.get()
         print 'New track: ' + self.current_track.name
 
@@ -36,10 +36,10 @@ class Player(object):
         self.current_track = None
 
     def play(self):
-    #if still playing, return nothing
-        #if self.state == Player.PLAYING: return None
-        #if self.state == Player.PAUSED: return self.backend.resume()
-        if self.playlist.empty() and not self.current_track: return None
+        #if still playing, return nothing
+        if (self.state() == 'playing'): return None
+        if (self.state() == 'paused'): return self.backend.resume()
+        if (self.playlist.empty() and not self.current_track): return None
 
         if not self.current_track:
             self.next_track_as_current()

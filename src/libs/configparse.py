@@ -2,7 +2,7 @@
 #
 # configparse is distributed under a BSD license.
 #
-# configparse - Copyright (C)2005 Lars Gustäbel (lars@gustaebel.de)
+# configparse - Copyright (C)2005 Lars Gustï¿½bel (lars@gustaebel.de)
 # All rights reserved.
 #
 # Permission  is  hereby granted,  free  of charge,  to  any person
