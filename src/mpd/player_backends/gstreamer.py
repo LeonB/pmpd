@@ -1,5 +1,9 @@
+from mpd.player_backend import PlayerBackend
 import gst
 import gobject
+import callbacks
+
+gobject.threads_init()
 
 class Gstreamer():
 
@@ -20,8 +24,9 @@ class Gstreamer():
     def on_message(self, bus, message):
         t = message.type
 	if t == gst.MESSAGE_EOS:
-            print 'ending....'
             self.playbin.set_state(gst.STATE_NULL)
+            #self.loop.quit()
+            print 'stopped gstreamer'
         elif t == gst.MESSAGE_ERROR:
             print message
             print 'error!'
@@ -29,43 +34,39 @@ class Gstreamer():
         elif t == gst.MESSAGE_STATE_CHANGED:
             #http://pygstdocs.berlios.de/pygst-reference/class-gstmessage.html
             new_state =  message.parse_state_changed()[1]
+            callbacks.RunCallbackChain(PlayerBackend, 'message', new_state)
         else:
             ''
             #print message
 
     def on_about_to_finish(self, playbin):
-#        try:
-#            next_track = self.player.playlist.get()
-#        except Exception:
-#            return False
-#
-#        self.playbin.set_property('uri', 'file://' + next_track.name)
-#        self.player.current_track = next_track
-        self.player.schedule_next_track()
+        if not self.player.stopped():
+            self.player.schedule_next_track()
 
-        if (self.player.current_track):
-            self.playbin.set_property('uri', 'file://' + self.player.current_track.name)
+            if (self.player.current_track):
+                track = self.player.current_track
+                self.playbin.set_property("uri", 'file://' + track.name)
+                self.playbin.set_state(gst.STATE_PLAYING)
 
-    def play(self, uri):
-        self.__state = 'playing'
-        self.playbin.set_property("uri", 'file://' + uri)
+    def play(self, track):
+        if self.playbin.get_state()[1] == gst.STATE_PLAYING:
+            self.playbin.set_state(gst.STATE_NULL)
+
+        self.playbin.set_property("uri", 'file://' + track.name)
         self.playbin.set_state(gst.STATE_PLAYING)
 
-        gobject.threads_init()
-        self.loop = gobject.MainLoop()
-        context = self.loop.get_context()
-        context.iteration(True)
-        self.loop.run()
+#        self.loop = gobject.MainLoop()
+#        context = self.loop.get_context()
+#        context.iteration(True)
+#        self.loop.run()
 
-#        loop = gobject.MainLoop()
-#        gobject.threads_init()
-#        context = loop.get_context()
-#        while 1:
-#            context.iteration(True)
+    def resume(self):
+        self.playbin.set_state(gst.STATE_PLAYING)
 
     def pause(self):
         self.playbin.set_state(gst.STATE_PAUSED)
 
     def stop(self):
-        self.loop.quit()
-        self.playbin.send_event(gst.event_new_eos())
+        #self.playbin.set_state(gst.STATE_NULL)
+        #self.playbin.send_event(gst.event_new_eos())
+        ''

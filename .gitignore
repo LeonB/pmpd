@@ -4,3 +4,4 @@ samples/gapless/flac/
 samples/gapless/mp3/
 samples/gapless/wav/
 mpd.log
+src/libs/Pyro-3.9.1/
