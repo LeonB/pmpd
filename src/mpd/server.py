@@ -4,12 +4,14 @@ from logger import Logger
 from player import Player
 import callbacks
 from callbacks import PermanentCallback
+from callback_method import *
 import gobject
 
 """Hier komt alles in om de applicatie "echt" te laten draaien"""
 #@TODO: misschien nog renamen naar app/server?
 
 class Server:
+
     def __init__(self):
         self.setup_config()
         self.setup_logger()
@@ -19,12 +21,15 @@ class Server:
 
         callbacks.RunCallbackChain(Server, 'after_boot', self)
 
+    @callback_method
     def setup_config(self):
         self.config = Config()
 
+    @callback_method
     def setup_logger(self):
         self.log = Logger(self.config.log)
 
+    @callback_method
     def setup_callbacks(self):
         from player import Player
         
@@ -57,9 +62,11 @@ class Server:
 
         callbacks.RunCallbackChain(Server, 'after_loading_plugins', self)
 
+    @callback_method
     def setup_player(self):
         self.player = Player()
 
+    @callback_method
     def run(self):
         gobject.threads_init()
         self.loop = gobject.MainLoop()
@@ -78,18 +85,6 @@ class Server:
     def stop(self):
         self.loop.quit()
         callbacks.RunCallbackChain(Server, 'after_stop', self)
-
-    run_old = run
-    def run(self):
-        callbacks.RunCallbackChain(Server, 'before_run', self)
-        self.run_old()
-        callbacks.RunCallbackChain(Server, 'after_run', self)
-
-    setup_player_old = setup_player
-    def setup_player(self):
-        callbacks.RunAllCallbacks(Server, 'before_setup_player', self)
-        self.setup_player_old()
-        callbacks.RunAllCallbacks(Server, 'after_setup_player', self)
 
 callbacks.RegisterCallback(Server, 'before_run',
     PermanentCallback(lambda s: s.log.debug('yep, before_run is called')))

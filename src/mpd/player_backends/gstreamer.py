@@ -55,6 +55,7 @@ class Gstreamer():
         self.playbin.set_property("uri", 'file://' + track.name)
         self.playbin.set_state(gst.STATE_PLAYING)
 
+#        Nodig bij processes
 #        self.loop = gobject.MainLoop()
 #        context = self.loop.get_context()
 #        context.iteration(True)

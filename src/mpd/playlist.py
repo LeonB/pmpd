@@ -23,7 +23,12 @@ class Playlist(Queue.Queue):
             else:
                 files = mglob.expand(input)
                 files.sort()
-                self.add(files)
+
+                for i in files:
+                    if not os.path.isfile(i) and not os.path.isdir(i):
+                        files.remove(i)
+                    else:
+                        self.add(i)
 
         #File
         elif clss == file:

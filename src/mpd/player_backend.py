@@ -1,6 +1,7 @@
 #from threading import Thread
 #import thread
 from threading import Thread
+from multiprocessing import Process
 #import threading
 from attr import *
 
@@ -19,8 +20,8 @@ class PlayerBackend(object):
             self.thread.join()
 
         self.thread = Thread(None, self.backend.play, None, (track,))
+        #self.thread = Process(target=self.backend.play, args=(track,))
         self.thread.start()
-        #self.thread = thread.start_new_thread(self.backend.play, (track,))
 
     def resume(self):
         self.state = 'playing'

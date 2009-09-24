@@ -2,6 +2,7 @@ from attr import *
 from playlist import Playlist
 from player_backend import PlayerBackend
 import callbacks
+from callback_method import *
 
 class Player(object):
     #attr_accessor :current_track, :history, :playlist, :current_track, :backend
@@ -15,8 +16,8 @@ class Player(object):
     def state(self):
         return self.backend.get_state()
 
+    @callback_method
     def schedule_next_track(self):
-        callbacks.RunCallbackChain(Player, 'scheduling_new_track', self)
         self.remove_current_track()
 
         if self.playlist.empty():
@@ -26,14 +27,15 @@ class Player(object):
 
         return self.next_track_as_current()
 
+    @callback_method
     def next_track_as_current(self):
-        callbacks.RunCallbackChain(Player, 'next_track', self)
         self.current_track = self.playlist.get()
         #print 'New track: ' + self.current_track.name
 
     def remove_current_track(self):
         self.current_track = None
 
+    @callback_method
     def play(self):
         #if still playing, return nothing
         if (self.state() == 'playing'): return False
@@ -46,7 +48,6 @@ class Player(object):
         print 'play'
 
         result = self.backend.play(self.current_track) #Current track is set
-        callbacks.RunCallbackChain(Player, 'play', self)
         return result
 
     def pause(self):
@@ -58,10 +59,10 @@ class Player(object):
     def resume(self):
         return self.backend.resume()
 
+    @callback_method
     def stop(self):
         self.backend.stop()
         result = self.remove_current_track()
-        callbacks.RunCallbackChain(Player, 'stop', self)
         return result
 
     def next(self):
