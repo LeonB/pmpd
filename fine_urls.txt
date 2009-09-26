@@ -1,0 +1,33 @@
+Plugins:
+ - http://aroberge.blogspot.com/2008/12/plugins-part-6-setuptools-based.html
+ - http://code.google.com/p/pyplugin/
+ - https://software.sandia.gov/trac/pyutilib/wiki/Documentation/Plugins
+ - http://wehart.blogspot.com/2009/01/python-plugin-frameworks.html
+ - http://martyalchin.com/2008/jan/10/simple-plugin-framework/
+
+DBUS:
+ - http://wiki.xmms2.xmms.se/wiki/MPRIS
+
+Threading:
+ - http://www.jejik.com/articles/2007/01/python-gstreamer_threading_and_the_main_loop/
+
+Icecast/gstreamer:
+  - http://elitistslounge.com/2008/10/29/stream-pulseaudio-output-to-shouticecast-server/
+
+WSGI:
+  - http://docs.python.org/library/wsgiref.html
+
+Distributed tasks:
+  - http://pypi.python.org/pypi/celery/0.6.0
+  - http://jobba.googlecode.com/
+  - http://docs.python.org/library/multiprocessing.html
+  - http://ask.github.com/celery/faq.html#can-i-use-celery-without-django
+
+LCDproc:
+  - http://www.m-koetter.de/node/2
+
+VoteAndDance:
+  - http://www.turbogears.org/2.0/docs/main/QuickStart.html
+
+pmpd_layer:
+  - http://twistedmatrix.com/projects/core/documentation/examples/

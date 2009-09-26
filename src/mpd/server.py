@@ -13,13 +13,15 @@ import gobject
 class Server:
 
     def __init__(self):
+        self.boot()
+
+    @callback_method
+    def boot(self):
         self.setup_config()
         self.setup_logger()
         self.setup_callbacks()
         self.load_plugins()
         self.setup_player()
-
-        callbacks.RunCallbackChain(Server, 'after_boot', self)
 
     @callback_method
     def setup_config(self):
@@ -82,6 +84,7 @@ class Server:
         finally:
             self.stop()
 
+    @callback_method
     def stop(self):
         self.loop.quit()
         callbacks.RunCallbackChain(Server, 'after_stop', self)
