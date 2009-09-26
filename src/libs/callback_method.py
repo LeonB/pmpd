@@ -5,6 +5,6 @@ def callback_method(what, *args):
         methodname = what.__name__
         callbacks.RunAllCallbacks(self.__class__, 'before_' + methodname, self)
         result = what(self)
-        callbacks.RunAllCallbacks(self.__class__, 'before_' + methodname, self)
+        callbacks.RunAllCallbacks(self.__class__, 'after_' + methodname, self)
         return result
     return with_callback_method
