@@ -37,7 +37,5 @@ class MpdLayer(object):
             if cls.thread and cls.thread.is_alive():
                 cls.thread.join()
 
-#callbacks.RegisterCallback(Server, 'before_run',
-#    PermanentCallback(doit))
 callbacks.RegisterCallback(Server, 'before_run', MpdLayer.run)
 callbacks.RegisterCallback(Server, 'before_stop', MpdLayer.stop)
